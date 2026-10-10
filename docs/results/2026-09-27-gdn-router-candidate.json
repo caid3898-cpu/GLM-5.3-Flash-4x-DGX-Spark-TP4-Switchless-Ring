@@ -1,0 +1,184 @@
+{
+  "status": "MEASURED_CANDIDATE_MANUAL_PROMOTION_PENDING",
+  "label": "NIGHT-GDN-ROUTER-262K-20260927-040504",
+  "context_tokens": 262144,
+  "source_closure_sha256": "47e006d6323fd3576a873e7bd2cff967ed7282c50c8ea9eb4a8629539924097b",
+  "benchmarks": {
+    "qeval": {
+      "c1": {
+        "passed": 72,
+        "total": 75,
+        "truncated": 1,
+        "failed_ids": [
+          "code_two_sum",
+          "math_m9",
+          "reason_r4"
+        ],
+        "accepted_passed": 75
+      },
+      "c4": {
+        "passed": 75,
+        "total": 75,
+        "accepted_passed": 75
+      }
+    },
+    "teacher_forced_kld": {
+      "items": 17,
+      "positions": 6618,
+      "mean_kl": 0.029189162046206807,
+      "p99_kl": 0.2677951196865743,
+      "top1_agreement": 0.923995164702327,
+      "accepted_mean_kl": 0.028836615723741327,
+      "accepted_p99_kl": 0.28362493767383135,
+      "accepted_top1_agreement": 0.9252039891205802,
+      "automatic_numerical_promotion": false
+    },
+    "sparkdash": {
+      "jobs": 20,
+      "streams": 100,
+      "summary": {
+        "prose:c1": {
+          "n": 5,
+          "meanDecodeTps_median": 71.64,
+          "aggregateDecodeTps_median": 71.64
+        },
+        "code:c1": {
+          "n": 1,
+          "meanDecodeTps_median": 123.93,
+          "aggregateDecodeTps_median": 123.93
+        },
+        "prose:c2": {
+          "n": 1,
+          "meanDecodeTps_median": 53.09,
+          "aggregateDecodeTps_median": 102.43
+        },
+        "prose:c4": {
+          "n": 3,
+          "meanDecodeTps_median": 39.41,
+          "aggregateDecodeTps_median": 149.44
+        },
+        "prose:c8": {
+          "n": 1,
+          "meanDecodeTps_median": 28.06,
+          "aggregateDecodeTps_median": 214.7
+        },
+        "prose:c16": {
+          "n": 1,
+          "meanDecodeTps_median": 20.29,
+          "aggregateDecodeTps_median": 305.59
+        },
+        "code:c4": {
+          "n": 1,
+          "meanDecodeTps_median": 50.28,
+          "aggregateDecodeTps_median": 168.71
+        },
+        "code:c16": {
+          "n": 1,
+          "meanDecodeTps_median": 21.67,
+          "aggregateDecodeTps_median": 289.58
+        },
+        "structured:c1": {
+          "n": 1,
+          "meanDecodeTps_median": 163.07,
+          "aggregateDecodeTps_median": 163.07
+        },
+        "structured:c16": {
+          "n": 1,
+          "meanDecodeTps_median": 21.98,
+          "aggregateDecodeTps_median": 300.21
+        },
+        "json:c1": {
+          "n": 1,
+          "meanDecodeTps_median": 126.16,
+          "aggregateDecodeTps_median": 126.16
+        },
+        "json:c16": {
+          "n": 1,
+          "meanDecodeTps_median": 30.46,
+          "aggregateDecodeTps_median": 439.12
+        }
+      },
+      "accepted_prose_c1_median_tps": 70.19,
+      "accepted_prose_c4_aggregate_median_tps": 152.89,
+      "accepted_prose_c16_aggregate_tps": 312.69,
+      "comparison": "descriptive cross-session; no significance or causal attribution"
+    },
+    "prefill": {
+      "bench": "client first observable generated delta, including reasoning; nominal prompt length; derived input tokens/s",
+      "warmups": 2,
+      "scored_requests": 9,
+      "summary": [
+        {
+          "size": 16384,
+          "n": 3,
+          "median_prefill_tps": 2202.1205645493765,
+          "median_ttft_s": 7.586778066994157,
+          "prompt_tokens": [
+            16707,
+            16707,
+            16709
+          ]
+        },
+        {
+          "size": 32768,
+          "n": 3,
+          "median_prefill_tps": 2209.319190314404,
+          "median_ttft_s": 15.197894513024949,
+          "prompt_tokens": [
+            33577,
+            33579,
+            33579
+          ]
+        },
+        {
+          "size": 65536,
+          "n": 3,
+          "median_prefill_tps": 2196.903434977906,
+          "median_ttft_s": 30.637668879004195,
+          "prompt_tokens": [
+            67306,
+            67308,
+            67306
+          ]
+        }
+      ],
+      "baseline_raw_sha256": "2aa4a016e1a230779f6606057afa6a5b1e9f1427c983d7926349074dc05289f3",
+      "comparison": [
+        {
+          "size": 16384,
+          "candidate_median_prefill_tps": 2202.1205645493765,
+          "baseline_median_prefill_tps": 2184.8310036174203,
+          "percent_delta": 0.7913454589087099
+        },
+        {
+          "size": 32768,
+          "candidate_median_prefill_tps": 2209.319190314404,
+          "baseline_median_prefill_tps": 2188.9354902519904,
+          "percent_delta": 0.9312152026950349
+        },
+        {
+          "size": 65536,
+          "candidate_median_prefill_tps": 2196.903434977906,
+          "baseline_median_prefill_tps": 2178.057789781805,
+          "percent_delta": 0.8652500078057512
+        }
+      ],
+      "cache_zero_measured": false,
+      "scope": "client first observable generated delta, including reasoning; derived rate, no isolated GPU or significance claim",
+      "raw_sha256": "241845a3999cc0b115d91b70341ff0355eae3ce8f1235feac2be0ce7a59bfc63",
+      "root_audit_sha256": "49759e8455140d81a4e29d52e79f5142c8eb4ea4ebe9a4b3002b4ab094428ded",
+      "guard_sha256": "66b21e43262dfc080339b60d116afdcf588a9ebbceb0f4986b36ef774be301c9",
+      "independent_review": "pending"
+    }
+  },
+  "evidence_sha256": {
+    "qeval-c1-check.json": "424c6c1010ba2fda0cd24018d154e8da7aad28a5ef2d805de2f4fef2d535df01",
+    "qeval-c4-check.json": "b010d181d3dc4d8571f7430343a88113f1e3534c3b61034b5cad15f5d86579b4",
+    "kld-check.json": "546a4682d5b9d8bfca4f99e7eb1e71ed1b45c6ae86aee0beeba0f32faf419721",
+    "sparkdash-complete.json": "40be4cc18fdb0f03621ee40dfe577ebda668cdb5faadd36cad1422a53c04b94a",
+    "source-postflight.json": "444315abf08173f10d3eb958210f5e06155f06eccb551d5d88d6c1648b8af4d1"
+  },
+  "final_guard_sha256": "e0fe135d37986e21bf1703d9504e19d4b844ff3dd2f5a16cfeb1a81fb8818104",
+  "root_audit_sha256": "9f6c729a4f0f5b4313297a365aea1ed4394074c70fd6ba886ebbe8dd13bd9082",
+  "scope": "Candidate measured panel only; no production promotion, portable deployment, published release, long-context capacity, causal prefill improvement or isolated GPU rate claim."
+}

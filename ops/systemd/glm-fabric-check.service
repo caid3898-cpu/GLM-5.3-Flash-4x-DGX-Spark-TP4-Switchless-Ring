@@ -1,0 +1,7 @@
+[Unit]
+Description=GLM ring fabric bandwidth check (bidirectional ib_write_bw, threshold 190 Gb/s)
+[Service]
+Type=oneshot
+ExecStart=%h/glm53-ops/fabric-check.sh
+TimeoutStartSec=600
+Nice=10

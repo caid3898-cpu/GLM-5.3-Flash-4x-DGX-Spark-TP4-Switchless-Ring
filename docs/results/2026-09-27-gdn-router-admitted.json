@@ -1,0 +1,158 @@
+{
+  "status": "QUALIFIED_SERVING_RECIPE",
+  "context_tokens": 262144,
+  "quantization": "unchanged NVFP4 experts plus lossless8 non-experts",
+  "source_closure_sha256": "47e006d6323fd3576a873e7bd2cff967ed7282c50c8ea9eb4a8629539924097b",
+  "sparkdash": {
+    "bench": "DecodeBench 256 completion/255 decode tokens; thinking off",
+    "summary": {
+      "prose:c1": {
+        "n": 5,
+        "meanDecodeTps_median": 71.64,
+        "aggregateDecodeTps_median": 71.64
+      },
+      "code:c1": {
+        "n": 1,
+        "meanDecodeTps_median": 123.93,
+        "aggregateDecodeTps_median": 123.93
+      },
+      "prose:c2": {
+        "n": 1,
+        "meanDecodeTps_median": 53.09,
+        "aggregateDecodeTps_median": 102.43
+      },
+      "prose:c4": {
+        "n": 3,
+        "meanDecodeTps_median": 39.41,
+        "aggregateDecodeTps_median": 149.44
+      },
+      "prose:c8": {
+        "n": 1,
+        "meanDecodeTps_median": 28.06,
+        "aggregateDecodeTps_median": 214.7
+      },
+      "prose:c16": {
+        "n": 1,
+        "meanDecodeTps_median": 20.29,
+        "aggregateDecodeTps_median": 305.59
+      },
+      "code:c4": {
+        "n": 1,
+        "meanDecodeTps_median": 50.28,
+        "aggregateDecodeTps_median": 168.71
+      },
+      "code:c16": {
+        "n": 1,
+        "meanDecodeTps_median": 21.67,
+        "aggregateDecodeTps_median": 289.58
+      },
+      "structured:c1": {
+        "n": 1,
+        "meanDecodeTps_median": 163.07,
+        "aggregateDecodeTps_median": 163.07
+      },
+      "structured:c16": {
+        "n": 1,
+        "meanDecodeTps_median": 21.98,
+        "aggregateDecodeTps_median": 300.21
+      },
+      "json:c1": {
+        "n": 1,
+        "meanDecodeTps_median": 126.16,
+        "aggregateDecodeTps_median": 126.16
+      },
+      "json:c16": {
+        "n": 1,
+        "meanDecodeTps_median": 30.46,
+        "aggregateDecodeTps_median": 439.12
+      },
+      "code:c2": {
+        "n": 1,
+        "meanDecodeTps_median": 84.87,
+        "aggregateDecodeTps_median": 151.4
+      },
+      "code:c8": {
+        "n": 1,
+        "meanDecodeTps_median": 33.42,
+        "aggregateDecodeTps_median": 243.43
+      },
+      "structured:c2": {
+        "n": 1,
+        "meanDecodeTps_median": 83.15,
+        "aggregateDecodeTps_median": 144.88
+      },
+      "structured:c4": {
+        "n": 1,
+        "meanDecodeTps_median": 52.05,
+        "aggregateDecodeTps_median": 194.03
+      },
+      "structured:c8": {
+        "n": 1,
+        "meanDecodeTps_median": 38.69,
+        "aggregateDecodeTps_median": 270.84
+      },
+      "json:c2": {
+        "n": 1,
+        "meanDecodeTps_median": 64.96,
+        "aggregateDecodeTps_median": 126.36
+      },
+      "json:c4": {
+        "n": 1,
+        "meanDecodeTps_median": 54.33,
+        "aggregateDecodeTps_median": 208.55
+      },
+      "json:c8": {
+        "n": 1,
+        "meanDecodeTps_median": 38.31,
+        "aggregateDecodeTps_median": 297.32
+      }
+    },
+    "primary_raw_sha256": "0ed7af80681f4232c8af6ac13e9502d572e281a07530757291e2a21233d15946",
+    "supplement_raw_sha256": "683afcf68ebb2aa122ce6ff9fca5377ac25c5174377aa8cfa2249dae79d00ff2",
+    "primary_repeat_counts": {
+      "prose:c1": 5,
+      "prose:c4": 3
+    },
+    "supplement_cells_single_observation": 8,
+    "comparison": "descriptive cross-session; mixed c1 gain and c4 aggregate regression"
+  },
+  "qeval": {
+    "c1_passed": 72,
+    "c4_passed": 75,
+    "total": 75,
+    "accepted_c1_passed": 75,
+    "accepted_c4_passed": 75,
+    "c1_truncated": 1,
+    "c1_failed_ids": [
+      "code_two_sum",
+      "math_m9",
+      "reason_r4"
+    ]
+  },
+  "teacher_forced_kld": {
+    "items": 17,
+    "positions": 6618,
+    "mean": 0.029189162046206807,
+    "accepted_mean": 0.028836615723741327,
+    "scope": "top20 folded-tail estimate on private panel; no whole-model bit identity"
+  },
+  "prefill": {
+    "bench": "first observable generated delta including reasoning",
+    "nominal_prompt_tokens": [
+      16384,
+      32768,
+      65536
+    ],
+    "median_input_tps": [
+      2202.1205645493765,
+      2209.319190314404,
+      2196.903434977906
+    ],
+    "scored_per_size": 3,
+    "cached_token_counts_available": false
+  },
+  "decision_sha256": "b451cfe3940e8da61e2db9260135a080d84d0586c123da55dabd657240ef2187",
+  "merged_table_sha256": "a29e3865bd2b5c54e151089c761bd5ecdc5e1b28708dc567aba1ffad602b1f28",
+  "prefill_review_sha256": "49759e8455140d81a4e29d52e79f5142c8eb4ea4ebe9a4b3002b4ab094428ded",
+  "scope": "Measurements of the qualified 262k serving stack. A fresh-clone build/boot of the portable recipe has not been tested. No optional candidate, 1M capacity, quality equivalence, isolated prefill or all-concurrency speed claim."
+}

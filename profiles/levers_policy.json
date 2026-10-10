@@ -1,0 +1,14 @@
+{
+    "k_lo": 3,
+    "k_hi": 7,
+    "up": 0.58,
+    "down": 0.42,
+    "alpha": 0.15,
+    "enabled": 1,
+    "default_k": null,
+    "mode": "batch-uniform",
+    "end_drain": 0,
+    "coalesce_ms": 0,
+    "seed": 1.0,
+    "signal": "pos"
+}

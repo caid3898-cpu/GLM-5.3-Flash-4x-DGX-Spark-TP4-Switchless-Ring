@@ -1,0 +1,30 @@
+FlashKDA sources vendored for overlay/glm_flashkda.py (GLM_FLASHKDA_PREFILL).
+
+Upstream:   https://github.com/mmastrac/FlashKDA  branch wip-fp32-state
+Commit:     fb4dfc96cb22fdf2fff3986330031184b9dcf2b9  (kernel numerics from f25017a, "fp32 state across chunks,
+            single-rounded operands, fp32 u and output"; on top of vllm-project/FlashKDA b59532f / 8b693a2)
+Licence:    MIT, Copyright (c) 2026 MoonshotAI (LICENSE in this directory). Matt Mastracci's commits on the branch
+            are under the same licence.
+Fetched:    2026-09-28
+
+Files (csrc/ of the upstream tree, same relative layout):
+  flash_kda.cpp flash_kda.h fwd.h torch_api.cpp smxx/utils.cuh smxx/fwd_kernel1.cuh smxx/fwd_kernel2.cuh
+  smxx/fwd_launch.cu
+The CUTLASS / CuTe headers are not vendored: the build uses the copy the image ships with FlashInfer
+(flashinfer/data/cutlass/include). Upstream pins cutlass 5c149f52 as a submodule.
+
+Local changes (marked "glm:" in the source):
+  1. smxx/fwd_kernel1.cuh, smxx/fwd_kernel2.cuh: tma_store_wait<0>() after the last TMA bulk store before the
+     block exits (K1 workspace stores; K2 final-state stores, bf16 and fp32). Taken from FlashKDA 8023e9c
+     (Simon Veitner, branch fp32-resident-state): without it the block may exit while the async copy still reads
+     its shared memory (undefined under PTX). Output-neutral.
+  2. torch_api.cpp: op namespace flash_kda -> glm_flashkda (no clash with any other FlashKDA build in the image),
+     and the Python module init removed (the library is loaded with torch.ops.load_library).
+  3. flash_kda.cpp, smxx/fwd_launch.cu: only the 4 launch_fwd instances the GLM prefill uses are compiled
+     (varlen, fp32 final state, no checkpoints, with or without an initial state, int32/int64 cu_seqlens) instead
+     of upstream's 64; any other combination is rejected by a check. Kernel code unchanged.
+
+Credits: MoonshotAI and the vLLM FlashKDA contributors (FlashKDA, MIT); Matt Mastracci (mmastrac) for
+wip-fp32-state and the fp32-state work behind FlashKDA #13; Simon Veitner (simon-veitner-redhat) for the TMA
+store-wait fix and vLLM #58846 (pin bump); JaredforReal for vLLM #55737 (how GLM's KDA prefill calls FlashKDA).
+Never use FlashKDA b59532f alone (bf16 recurrent state between tiles).

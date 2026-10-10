@@ -1,0 +1,18 @@
+# glm53-lb.service —— 前门负载均衡器（:8002，session-sticky）
+[Unit]
+Description=GLM-5.3-Flash-FP8 TP4 front door (session-sticky LB on :8002)
+After=network-online.target
+
+[Service]
+WorkingDirectory=/opt/glm53-lb
+# 注意：JSON 里的双引号会被 systemd 吞掉，必须用单引号整体包住
+Environment=GLM_BACKENDS='{"A": "http://127.0.0.1:8093"}'
+Environment=GLM_MODEL=GLM-5.3-Flash-FP8
+Environment=GLM_HEALTH_INTERVAL=3
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 -m uvicorn glm53-lb:app --host 0.0.0.0 --port 8002 --log-level info
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,24 @@
+#include <torch/csrc/stable/library.h>
+
+#include "flash_kda.h"
+
+STABLE_TORCH_LIBRARY(glm_flashkda, m) {
+    m.def("get_workspace_size(int T_total, int H, int N=1) -> int");
+    m.def(
+        "fwd(Tensor q, Tensor k, Tensor v, Tensor g, Tensor beta, "
+        "float scale, Tensor(a!) out, Tensor(c!) workspace, Tensor A_log, "
+        "Tensor dt_bias, float lower_bound, Tensor? initial_state=None, "
+        "Tensor(b!)? final_state=None, Tensor? cu_seqlens=None, "
+        "Tensor(d!)? checkpoint_state=None, "
+        "Tensor? checkpoint_offsets=None) -> ()");
+}
+
+STABLE_TORCH_LIBRARY_IMPL(glm_flashkda, CUDA, m) {
+    m.impl("fwd", TORCH_BOX(&fwd));
+}
+
+STABLE_TORCH_LIBRARY_IMPL(glm_flashkda, CompositeExplicitAutograd, m) {
+    m.impl("get_workspace_size", TORCH_BOX(&get_workspace_size));
+}
+
+// glm: loaded with torch.ops.load_library (no Python module init); op namespace renamed flash_kda -> glm_flashkda.

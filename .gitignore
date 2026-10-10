@@ -1,0 +1,8 @@
+.env
+cache/
+logs/
+runs/
+__pycache__/
+*.pyc
+qualification.json
+tests/.cpu_logs/

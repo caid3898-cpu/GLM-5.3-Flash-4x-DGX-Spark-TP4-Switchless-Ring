@@ -1,0 +1,13 @@
+{
+ "c1": {
+  "2": 30.056,
+  "3": 33.526,
+  "4": 36.082,
+  "5": 39.81,
+  "6": 42.627,
+  "7": 45.73,
+  "8": 49.344
+ },
+ "row_ms": 1.2,
+ "source": "c1 verify-shape step probe, run 2146 of 2026-09-28 (median step ms by verify rows)"
+}

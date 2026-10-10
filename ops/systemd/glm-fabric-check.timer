@@ -1,0 +1,8 @@
+[Unit]
+Description=Run GLM ring fabric check every 6 hours
+[Timer]
+OnCalendar=*-*-* 00/6:00:00
+Persistent=true
+RandomizedDelaySec=600
+[Install]
+WantedBy=timers.target

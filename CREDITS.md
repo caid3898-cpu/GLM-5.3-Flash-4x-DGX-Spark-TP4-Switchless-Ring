@@ -1,0 +1,76 @@
+# Credits and component licences
+
+This recipe combines upstream model/runtime work, community Spark recipes and local integration by **knapcio**. Attribution below distinguishes code origins from ideas and earlier experiments. Credit does not imply endorsement or transfer another project's performance results to this release.
+
+## Models and runtime
+
+- **Z.AI** created [GLM-5.3-Flash](https://huggingface.co/zai-org/GLM-5.3-Flash). **NVIDIA** provides the [NVFP4 checkpoint](https://huggingface.co/nvidia/GLM-5.3-Flash-NVFP4) used as the accepted target's starting point and Model Optimizer. Local preparation retains the routed-expert quantization and converts selected non-expert tensors. **Red Hat AI** and **LibertAI** supplied the [RedHatAI](https://huggingface.co/RedHatAI/GLM-5.3-Flash-NVFP4) and [LibertAIDAI](https://huggingface.co/LibertAIDAI/GLM-5.3-Flash-NVFP4) checkpoints used in earlier recipe work; they are not the source of the current NVIDIA target.
+- **Inco AI / incoai** provides [GLM-5.3-Flash-DFlash2](https://huggingface.co/incoai/GLM-5.3-Flash-DFlash2). The model card specifies **CC BY-NC-ND 4.0**. Model weights, including the locally converted drafter, are not distributed here. The repository's software licence does not grant model rights; consult the model card and its licensing contact for the intended use or redistribution.
+- **vLLM contributors** supply the serving engine, GLM implementation, Marlin kernels and runtime interfaces. Copied and modified vLLM files retain **Apache-2.0** headers. **SGLang contributors** are credited for the Hadamard-128 transform carried in `overlay/glm5next_kpool_compress.py` ([SGLang](https://github.com/sgl-project/sglang), Apache-2.0).
+- **Songlin Yang and Yu Zhang**, [Flash Linear Attention](https://github.com/fla-org/flash-linear-attention), authored the MIT-licensed recurrent kernel copied into vLLM's third-party FLA tree and used by `kda_stash.py` / `glm_kda_stash_fast.py`. The [retained MIT notice](LICENSES/MIT-Flash-Linear-Attention.txt) is from that source version, rather than today's different upstream copyright line.
+
+## Spark recipes, scheduling and communication
+
+- **tonyd2wild** supplies the SM121 ARM64 vLLM image `ghcr.io/tonyd2wild/vllm-glm53-flash:sm121-v11-dflash2`, NoPE/kpool work, DFlash2 prefix-cache repair, GB10 MoE configuration, cache-flusher recipe and the image-specific RoCEnante port. See the [2-Spark DFlash2 recipe](https://github.com/tonyd2wild/GLM-5.3-Flash-NVFP4-DFlash2-2x-DGX-Spark) and [4-Spark recipe](https://github.com/tonyd2wild/GLM-5.3-Flash-NVFP4-1M-KV-4x-DGX-Spark). His observation about BF16 non-expert weights in the Red Hat checkpoint motivated the earlier independent `quantize_dense_nvfp4.py` converter. Tony-specific glue has an unresolved upstream licence declaration; see [NOTICE](NOTICE), rather than assuming it is MIT.
+- **Jacopo Nardiello (jnardiello)** supplies the [4-Spark FP8 recipe](https://github.com/jnardiello/GLM-5.3-Flash-FP8-4-DGX-Spark-Switchless), `adaptive_k_scheduler.py`, and scheduling / prefill work informing the local batch-uniform scheduler. His E27 (prefill cadence), E27b/c (short-prefill bypass, cadence while queued) and E29 (end drain, idle coalescing) are adapted for the non-DP engine core in `overlay/glm_prefill_sched.py` and are on in the current profile; the non-DP prefill throttle they need comes from **FujitsuPolycom**'s [SparkRing](https://github.com/FujitsuPolycom/sparkring) R10 image. The source retains its Apache header and separable MIT modifications; [Jacopo's MIT notice](LICENSES/MIT-Jacopo-Nardiello.txt) is included.
+- **Luke Alonso (lukealonso), Jason Cook (original-el8), and Local Inference Lab** supply b12x / RoCEnante. The collective was introduced in [b12x #295](https://github.com/local-inference-lab/b12x/pull/295); Jason's vLLM shim is [vllm #597](https://github.com/local-inference-lab/vllm/pull/597). This recipe uses the b12x subset pinned in [`roce/b12x/PROVENANCE.json`](roce/b12x/PROVENANCE.json) and the tonyd2wild image port. **rhys101's SG17** DeepSeek deployment demonstrated the integration pattern. b12x is Apache-2.0; individual vendored files can carry additional notices, including NVIDIA BSD-3-Clause code.
+- **Alex Ellis / OpenFaaS Ltd** supplied the [NVFP4 + Marlin 4-Spark launch recipe](https://github.com/alexellis/glm-5.3-flash-4x-dgx-spark-switchless) and RigMark methodology ([MIT notice](LICENSES/MIT-Alex-Ellis.txt)). **Reederey87's** [EXL3 recipe](https://github.com/Reederey87/glm53-flash-exl3-2x-dgx-spark) supplied the verify-only adaptive idea extended by the historical adaptive-draft scheduler.
+- **Switchless NCCL lineage:** The optional four-PF profile points to [othexmr's source integration](https://github.com/othexmr/switchless-nccl/commit/94c2669e82ea47e9d85dafee9ef46b85b931d21a), which pins [NVIDIA NCCL 2.30.7-1](https://github.com/NVIDIA/nccl/tree/73cf112295c33aee2b895f329f592f2a9b4b0f97). The first two switchless patches were published by **FujitsuPolycom's SparkRing** under Apache-2.0 ([source commit](https://github.com/FujitsuPolycom/sparkring/commit/b9b2225363c45ea76139493153c7756769ae5de5)); **Alex Ellis / OpenFaaS Ltd** added the hardening patch in [switchless-nccl](https://github.com/alexellis/switchless-nccl), also Apache-2.0. The profile credits a [SparkRing dual-PCI-domain patch](https://github.com/FujitsuPolycom/sparkring/blob/ae38b0f11df4dece04673ba8549befc7e527bdf5/spark_transport/nccl/nccl-2.30.7-dual-pci-domain.patch) as the precursor to its PCI-root behavior. The NCCL subnet-routing change is [authored by Zifu Yang and signed off by Xiaofan Li](https://github.com/NVIDIA/nccl/commit/5c1c4288e6627e9b442eda997aa6ee9136cda0bd). **Joseph Rose**'s [initial skip-Tree/skip-PAT commit](https://github.com/josephdrose/nccl-spark-switchless/commit/27ca6d3bdc43d6c2978fc34b920cdc8a218a333a) is conceptual prior art only; that repository declares no licence, and no code from it is included. This recipe uses the patched library as an external dependency and does not vendor NCCL. The launcher side of the switchless mode (`scripts/transport.sh`, `scripts/check_switchless_nccl.py`, `docs/switchless.md`) was contributed by **othexmr** in [PR #1](https://github.com/knapcio/GLM-5.3-Flash-4x-DGX-Spark-TP4/pull/1).
+
+## Specific upstream fixes
+
+| Contributor | Origin and local use |
+|---|---|
+| **ZJY0516** | [vLLM #53906](https://github.com/vllm-project/vllm/pull/53906), GLM-5.3 support. **vcruz305** identified the [hybrid kpool tail-slot root cause](https://github.com/vllm-project/vllm/pull/53906#issuecomment-5468099527), carried in the local tail-map repair. |
+| **JaredforReal** | [vLLM #57477](https://github.com/vllm-project/vllm/pull/57477), padded indexer seed stride. [#55736](https://github.com/vllm-project/vllm/pull/55736) informed the separately implemented local router deduplication in this release; the discarded router GEMM was also flagged in MiaAI-Lab issue #271. The earlier strided-KDA experiment remains excluded; this credit does not claim that the local integration is the upstream PR. |
+| **mmastrac**, **ivanium** | [vLLM #58454](https://github.com/vllm-project/vllm/pull/58454) and [#55219](https://github.com/vllm-project/vllm/pull/55219), speculative kpool corruption and packed-layout/ring work informing the carried indexer fixes. |
+| **zixi-qi** | [vLLM #34049](https://github.com/vllm-project/vllm/pull/34049), vocabulary-parallel top-token selection underlying the local target argmax extension; older local notes use the handle `qizixi`. |
+| **logprobz** | Local Inference Lab's [vllm #639](https://github.com/local-inference-lab/vllm/pull/639) and [#640](https://github.com/local-inference-lab/vllm/pull/640), literal tool delimiters and parser stop-anchor fixes. |
+| **lilianmoraru** | [MiaAI-Lab recipe #203](https://github.com/MiaAI-Lab/GLM-5.3-Flash-EXL3-2x-DGX-Sparks/pull/203), the missing indexer warmup bucket, investigated and applied during earlier recipe work; that optional hook is not included in this release. |
+| **alexbi29** | [vLLM #50843](https://github.com/vllm-project/vllm/pull/50843), padded-vocab tile argmax clamp; ported into `overlay/gumbel.py`, `overlay/rejection_sampler_utils.py` and `overlay/glm_target_argmax.py` (Apache-2.0 headers retained), enabled by `GLM_ARGMAX_CLAMP=1`. |
+| **Willian-Zhang** | [vLLM issue #58726](https://github.com/vllm-project/vllm/issues/58726), GB10 checkpoint-loading diagnosis that motivated the local slab loader. |
+
+The GDN integer-metadata producer and hook build on the interfaces of
+vLLM contributors' `GDNAttentionMetadataBuilder.build` and
+`mamba_get_block_table_tensor`. The fused producer and integration are local
+work; no specific upstream PR or individual author is established here. The
+GDN/router integration passed the [documented full-stack validation](docs/validation.md).
+
+## DeepSeek lineage and measurement
+
+**Mia (MiaAI-Lab)** supplied the earlier [EXL3 Spark recipe](https://github.com/MiaAI-Lab/GLM-5.3-Flash-EXL3-2x-DGX-Sparks), launcher / benchmark discipline, [sparkDash](https://github.com/MiaAI-Lab/sparkDash) ([MIT notice](LICENSES/MIT-sparkDash.txt)), and the [DeepSeek recipe](https://github.com/MiaAI-Lab/DeepSeek-v4.1-Flash-DGX-Sparks) on which the local DeepSeek work was built. **malaiwah's** [cross-stack KLD panel](https://huggingface.co/brandonmusic/GLM-5.3-Flash-tr3-4bpw/discussions/1) informed the local fidelity methodology. This release's results remain its own measurements.
+
+The accepted GLM L2-prefetch kernel and fork/join design come from **knapcio's** [`adapter/l2_prefetch.py` contribution](https://github.com/knapcio/DeepSeek-V4.1-Flash-4x-DGX-Spark-TP4/commit/a525cd88eddf0916b4d01be09c79cbc68f08ebf2). The CUDA body is retained with a renamed entry point; GLM uses different, fixed target windows. Owner-authored replicated-projection splitting, eager glue were also adapted from that [DeepSeek branch](https://github.com/knapcio/DeepSeek-V4.1-Flash-4x-DGX-Spark-TP4). Those GLM files carry their own Apache-2.0 headers. The DeepSeek repository's AGPL licence and third-party notices remain applicable there; this is not a relicensing of its entire codebase.
+
+The mHC prefill sharding (`overlay/glm_prefill_shard.py`, `GLM_PREFILL_SHARD=1` with row padding, on since the 2026-09-29 release) is an independent implementation informed by **Jacopo Nardiello's E03** and **FujitsuPolycom's [SparkRing mHC-prefill work](https://github.com/FujitsuPolycom/sparkring/tree/61f277bd0c97fbff892668e12ea04a330a45fa01/runtime/glm53-spark-mtp3-mesh/performance/mhc-prefill)**. Runtime switches and validation scope are documented separately in [runtime notes](docs/runtime.md).
+
+## 2026-09-29 additions
+
+| Piece | Origin |
+|---|---|
+| Gumbel-coupled drafting at T > 0 (`overlay/glm_gumbel_coupled.py`) | The method is **Jim Routh's (routhjim)** [llama.cpp-lab PR #26](https://github.com/routhjim/llama.cpp-lab/pull/26), "coupled sampling for a sampling target"; the vLLM implementation, kernels and checks are ours, no code copied. Theory: the Gumbel-max trick (Gumbel 1954; Maddison, Tarlow and Minka 2014) and drafter-invariant coupling (Daliri et al., arXiv 2408.07978). |
+| FlashKDA for the KDA chunked prefill (`overlay/glm_flashkda.py`, `overlay/glm_flashkda_csrc/`) | [FlashKDA](https://github.com/MoonshotAI/FlashKDA) by **MoonshotAI** and the vLLM FlashKDA contributors, **MIT** ([licence](LICENSES/MIT-FlashKDA.txt), also next to the sources). The vendored kernels come from **Matt Mastracci's** fork branch `wip-fp32-state` (fp32 recurrent state across chunks, same MIT licence), with **Simon Veitner's** TMA store-wait fix; **JaredforReal's** vLLM #55737 shows how GLM's KDA prefill calls FlashKDA. Local changes are listed in `overlay/glm_flashkda_csrc/PROVENANCE`. |
+| KDA conv split, Triton sparse MLA prefill, fused MoE prefill epilogues (`overlay/glm_kda_conv_split.py`, `glm_sparse_mla_prefill.py` + `glm_sparse_mla_kernel.py`, `glm_pf3_*`) | Ideas from **Matt Mastracci's (mmastrac)** [GLM-5.3-Flash 4x GX10 recipe](https://github.com/mmastrac/glm-5.3-flash-4x-gx10) (PR #4 `causal_conv1d` out_group and "gb10 sparse MLA", `moe_prefill` / `SP_MOE_FUSED`), with an independent reproduction of the sparse-MLA result by **chuck-ads**. Ideas only: our implementations, none of the recipe's code. |
+| Routed-MoE prefill kernels (`overlay/glm_pf3_jit.py`, `overlay/glm_pf3_csrc/`) and the Marlin launch tuning (`overlay/glm_marlin_tune.py`) | vLLM's MoE Marlin template, vendored at the image's vLLM commit (Apache-2.0); Marlin by **Elias Frantar** and **Dan Alistarh** (IST-DASLab), its vLLM port and MoE / NVFP4 / stream-K work by **Neural Magic** and vLLM contributors (vllm#24722). |
+| Dense 8-bit decode / prefill kernels (`overlay/glm_dense_fast.py`, `overlay/glm_dense_fast_csrc/`) | Our kernels; they reuse Marlin's weight layout, dequantisation and MMA operand construction (credits as above). |
+| mHC BF16 hc function (`overlay/glm_mhc_bf16w.py`) | vLLM's TileLang mHC kernel (vLLM contributors, TileLang authors), recompiled with the BF16 weight read; bit-exact, checked at install. |
+| Early attention plan (`overlay/glm_early_plan.py`) | Built on the vLLM V2 runner and the FlashInfer MLA plan; **FujitsuPolycom's** local-inference-lab/vllm#923 identified the pinned-staging race class its fence closes. |
+| RoCE gather route (`overlay/glm_roce_gather_route.py`), RoCE proxy pin (`overlay/glm_roce_proxy_pin.py`) | Wrappers around the RoCEnante shim credited above (Jason Cook's vllm #597 via tonyd2wild's port; b12x by Luke Alonso and Jason Cook). |
+| Certified target head, draft-shape truncation and its device-side selection, head-gate GEMV, fused drafter conv, L2 windows for MLA and the drafter, corrected L2 tables (`glm_l2pf_v2.py`) | Ours. The L2 windows extend the DeepSeek-V4.1 `l2_prefetch` kernel credited above. |
+
+See [NOTICE](NOTICE) for licence boundaries and source omissions. The top-level MIT licence covers repository-owned material subject to the stated exceptions; it does not replace upstream software, container or model terms.
+
+## This fork: four-node switchless-ring deployment (2026-10)
+
+Deployment, qualification and ops tooling on top of knapcio's TP4 recipe by **caid3898-cpu**
+(this repository's fork owner), building directly on:
+- **knapcio**'s [GLM-5.3-Flash-4x-DGX-Spark-TP4](https://github.com/knapcio/GLM-5.3-Flash-4x-DGX-Spark-TP4) (base recipe, commit 770d115);
+- **othexmr**'s switchless launcher ([PR #1](https://github.com/knapcio/GLM-5.3-Flash-4x-DGX-Spark-TP4/pull/1)) - this fork is its first ring qualification;
+- **FujitsuPolycom/SparkRing**'s dual-PCI-domain NCCL patch lineage;
+- community 1M-context references: yunwei37, METIQ-Solutions, sethforprivacy, ZackO2o (see `docs/zh/环网与TP4全网调研.md`).
+
+Deployment-time bespoke tooling (hand-built during the production bring-up, authored with the
+**Kimi Code** agent): the session-sticky front-door LB (`ops/frontdoor/glm53-lb.py`), the
+Responses/concurrency gateway pair (`ops/gateway-8003/`, `ops/concurrency-8001/`), the bidirectional
+ring-cable patrol (`ops/scripts/fabric-check.sh`), the hardened healthcheck and the MemoryMax guard
+(`ops/frontdoor/glm53-lb.service.d-memguard.conf`) born from the OOM-killer incident.

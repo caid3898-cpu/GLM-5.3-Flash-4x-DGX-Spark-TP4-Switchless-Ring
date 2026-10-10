@@ -1,0 +1,40 @@
+{
+ "version": 1,
+ "m_grid": [
+  4,
+  8,
+  16,
+  32
+ ],
+ "moe": {
+  "persistent_workspace": true,
+  "entries": [
+   {
+    "gemm": "gate_up",
+    "m": 4,
+    "thread_k": 128,
+    "thread_n": 128,
+    "blocks_per_sm": 1
+   },
+   {
+    "gemm": "gate_up",
+    "m": 16,
+    "thread_k": 128,
+    "thread_n": 128,
+    "blocks_per_sm": 1
+   },
+   {
+    "gemm": "gate_up",
+    "m": 32,
+    "thread_k": 128,
+    "thread_n": 128,
+    "blocks_per_sm": 1
+   }
+  ]
+ },
+ "dense": {
+  "unpad": "off",
+  "view_max_m": 32,
+  "entries": []
+ }
+}

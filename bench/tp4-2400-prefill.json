@@ -1,0 +1,127 @@
+[
+ {
+  "size": 8192,
+  "cold": [
+   {
+    "prompt_tokens": 8381,
+    "ttft_s": 10.471,
+    "prefill_tps": 800.4,
+    "kind": "cold"
+   },
+   {
+    "prompt_tokens": 8381,
+    "ttft_s": 2.977,
+    "prefill_tps": 2814.9,
+    "kind": "cold"
+   }
+  ],
+  "cold_median_tps": 1807.65,
+  "cold_median_ttft": 6.724,
+  "replay": {
+   "prompt_tokens": 8381,
+   "ttft_s": 0.648,
+   "prefill_tps": 12933.0,
+   "kind": "replay"
+  }
+ },
+ {
+  "size": 16384,
+  "cold": [
+   {
+    "prompt_tokens": 16706,
+    "ttft_s": 6.484,
+    "prefill_tps": 2576.3,
+    "kind": "cold"
+   },
+   {
+    "prompt_tokens": 16709,
+    "ttft_s": 5.501,
+    "prefill_tps": 3037.2,
+    "kind": "cold"
+   }
+  ],
+  "cold_median_tps": 2806.75,
+  "cold_median_ttft": 5.9925,
+  "replay": {
+   "prompt_tokens": 16709,
+   "ttft_s": 0.371,
+   "prefill_tps": 44979.6,
+   "kind": "replay"
+  }
+ },
+ {
+  "size": 32768,
+  "cold": [
+   {
+    "prompt_tokens": 33577,
+    "ttft_s": 11.021,
+    "prefill_tps": 3046.5,
+    "kind": "cold"
+   },
+   {
+    "prompt_tokens": 33578,
+    "ttft_s": 10.987,
+    "prefill_tps": 3056.3,
+    "kind": "cold"
+   }
+  ],
+  "cold_median_tps": 3051.4,
+  "cold_median_ttft": 11.004000000000001,
+  "replay": {
+   "prompt_tokens": 33578,
+   "ttft_s": 0.652,
+   "prefill_tps": 51497.0,
+   "kind": "replay"
+  }
+ },
+ {
+  "size": 65536,
+  "cold": [
+   {
+    "prompt_tokens": 67307,
+    "ttft_s": 27.928,
+    "prefill_tps": 2410.0,
+    "kind": "cold"
+   },
+   {
+    "prompt_tokens": 67304,
+    "ttft_s": 21.844,
+    "prefill_tps": 3081.1,
+    "kind": "cold"
+   }
+  ],
+  "cold_median_tps": 2745.55,
+  "cold_median_ttft": 24.886000000000003,
+  "replay": {
+   "prompt_tokens": 67304,
+   "ttft_s": 0.438,
+   "prefill_tps": 153753.4,
+   "kind": "replay"
+  }
+ },
+ {
+  "size": 131072,
+  "cold": [
+   {
+    "prompt_tokens": 138719,
+    "ttft_s": 45.727,
+    "prefill_tps": 3033.6,
+    "kind": "cold"
+   },
+   {
+    "prompt_tokens": 138715,
+    "ttft_s": 45.585,
+    "prefill_tps": 3043.0,
+    "kind": "cold"
+   }
+  ],
+  "cold_median_tps": 3038.3,
+  "cold_median_ttft": 45.656,
+  "replay": {
+   "prompt_tokens": 138715,
+   "ttft_s": 0.598,
+   "prefill_tps": 232101.1,
+   "kind": "replay"
+  }
+ }
+]

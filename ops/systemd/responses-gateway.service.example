@@ -1,0 +1,19 @@
+# responses-gateway.service.example —— Anthropic/Responses 兼容网关 (:8003)
+# 代码：ops/gateway-8003/main.py（客户端鉴权 + 模型别名 + reasoning 镜像到
+#       reasoning_content + SSE 透传；流量治理在 ops/concurrency-8001/）。
+# ⚠️ 落地：复制到 systemd --user 并改 WorkingDirectory/ExecStart 路径与 key。
+[Unit]
+Description=GLM responses gateway (8003)
+After=network-online.target
+
+[Service]
+WorkingDirectory=/opt/glm53-gateway
+Environment=GATEWAY_PORT=8003
+Environment=VLLM_URL=http://127.0.0.1:8001
+Environment=API_KEY=sk-CHANGE-ME
+Environment=PUBLIC_MODEL=GLM-5.3-Flash-FP8
+ExecStart=/usr/bin/python3 -m uvicorn main:app --host 0.0.0.0 --port 8003
+Restart=always
+
+[Install]
+WantedBy=default.target

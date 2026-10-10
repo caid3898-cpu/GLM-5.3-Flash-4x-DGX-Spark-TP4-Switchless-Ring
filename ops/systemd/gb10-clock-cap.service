@@ -1,0 +1,13 @@
+[Unit]
+Description=Cap GB10 SM clock for thermal and power headroom (2550MHz pinned, 2026-10-06, measured +2~3%)
+After=nvidia-persistenced.service
+Wants=nvidia-persistenced.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/nvidia-smi -lgc 0,2550
+ExecStop=/usr/bin/nvidia-smi -rgc
+
+[Install]
+WantedBy=multi-user.target

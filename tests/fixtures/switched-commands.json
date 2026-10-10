@@ -1,0 +1,10 @@
+{
+  "source_commit": "3ab5ca0",
+  "scope": "Four switched docker-run argv arrays of the 2026-09-29 release launcher (3ab5ca0) in launch order 3,2,1,0; only HOME normalized. Default .env.example/current.env. Regenerate from the previous release's start.sh whenever the launcher or the default profile changes.",
+  "sha256": [
+    "20ff8fa2e7d943cafcd4754011d699ebbeb4fc2a96380749dad0218c41032576",
+    "3d2e42f30bfb2ecd20a790a1f7b1642f82a605042720a31f53fe6a1f32797584",
+    "fc7315335c921b8ab5bf05fe7eddd3c4c4e2b336243361213cc50797712e1cec",
+    "91eb9b692a609b390a4a43a4eb7a82261ea4a482cba2415837fcd7be97f12bfe"
+  ]
+}
